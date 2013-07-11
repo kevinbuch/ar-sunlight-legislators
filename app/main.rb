@@ -2,6 +2,7 @@ require_relative '../db/config'
 require_relative 'models/legislator'
 require_relative 'models/senator'
 require_relative 'models/representative'
+require 'twitter'
 
 def state_reps(state)
   puts 'Senators:'
@@ -40,3 +41,14 @@ puts "Senators: #{Senator.count}"
 puts "Representatives: #{Representative.count}"
 
 # SELECT state, count(type = 'Senator'), count(type = 'Representative') FROM legislators GROUP BY state;
+
+Twitter.configure do |config|
+  config.consumer_key = 'Wo3Z7WTQaYZC7L9i2xZQ'
+  config.consumer_secret = 'MU0Ih3q3h3XqT4nXt5qfcxNwZ85RXXHS0VDFwwmrQQ'
+  config.oauth_token = '1374694152-iDocj1sHRa0WdptboQWG52WW8Yr7uoQhuARaQak'
+  config.oauth_token_secret = 'ieWn99Z1oJ0cJLPLGl83o4IuhNdSLnI3q4Y8IEE'
+end
+
+tweeter = Legislator.find(2)
+tweeter.save_twitter_feed
+puts tweeter.tweets
