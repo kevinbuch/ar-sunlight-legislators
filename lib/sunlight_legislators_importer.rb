@@ -1,13 +1,17 @@
 require 'csv'
+require_relative '../app/models/legislator'
+require_relative '../app/models/senator'
+require_relative '../app/models/representative'
 
-class SunlightLegislatorsImporter
-  def self.import(filename)
-    csv = CSV.new(File.open(filename), :headers => true)
-    csv.each do |row|
-      row.each do |field, value|
-        # TODO: begin
-        raise NotImplementedError, "TODO: figure out what to do with this row and do it!"
-        # TODO: end
+module SunlightLegislatorsImporter
+  def self.import(filename=File.dirname(__FILE__) + "/../db/data/legislators.csv")
+    CSV.foreach(filename, :headers => true, header_converters: :symbol) do |row|
+      attributes = row.to_hash
+      attributes[:phone].gsub!('-','') if attributes[:phone]
+      if attributes[:title] == 'Sen'
+        Senator.create!(attributes)
+      elsif attributes[:title] == 'Rep'
+        Representative.create!(attributes)
       end
     end
   end
